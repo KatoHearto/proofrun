@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} · Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node --test "test/*.test.js"
+
+  dogfood:
+    name: proofrun must be able to verify itself
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Record a run of the test suite
+        run: node bin/proofrun.js run --quiet -- node --test test/diff.test.js
+
+      - name: The same run must reproduce
+        # This is the real regression test for the normalisers. Every timing,
+        # temporary path and colour code the runner emits has to be recognised
+        # as noise, or this step goes red — which is exactly how the missing
+        # `duration_ms 3396.35` normaliser was found in the first place.
+        run: |
+          id=$(ls .proofrun/*.json | head -1 | xargs basename | sed 's/.json//')
+          node bin/proofrun.js verify "$id"
+
+      - name: A changed result must NOT reproduce
+        run: |
+          id=$(ls .proofrun/*.json | head -1 | xargs basename | sed 's/.json//')
+          echo "console.log('an extra line nobody recorded');" >> test/diff.test.js
+          set +e
+          node bin/proofrun.js verify "$id" --no-color
+          code=$?
+          set -e
+          test "$code" -eq 1 || {
+            echo "a changed suite still verified — the check is asleep"
+            exit 1
+          }
+          git checkout -- test/diff.test.js

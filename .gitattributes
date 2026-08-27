@@ -1,0 +1,14 @@
+# Normalise line endings in the repository to LF, and check out LF everywhere.
+#
+# Without this, a Windows clone gets CRLF in every file, and any shell script
+# or Dockerfile in the tree then fails on Linux with
+#   bad interpreter: /bin/sh^M: no such file or directory
+# This is the fix `portlint` points at when it reports crlf-in-script.
+* text=auto eol=lf
+
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
