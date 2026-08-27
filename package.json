@@ -3,15 +3,40 @@
   "version": "0.1.0",
   "description": "Turn a command run into a record you can check later.",
   "type": "module",
-  "bin": { "proofrun": "bin/proofrun.js" },
-  "exports": { ".": "./src/index.js" },
-  "files": ["bin", "src", "README.md", "LICENSE"],
-  "scripts": { "test": "node --test \"test/*.test.js\"" },
-  "engines": { "node": ">=18.0.0" },
-  "keywords": ["reproducibility", "evidence", "flaky tests", "ci", "audit", "provenance"],
+  "bin": {
+    "proofrun": "bin/proofrun.js"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "reproducibility",
+    "evidence",
+    "flaky tests",
+    "ci",
+    "audit",
+    "provenance"
+  ],
   "author": "KatoHearto",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/KatoHearto/proofrun.git" },
-  "bugs": { "url": "https://github.com/KatoHearto/proofrun/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KatoHearto/proofrun.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KatoHearto/proofrun/issues"
+  },
   "homepage": "https://github.com/KatoHearto/proofrun#readme"
 }

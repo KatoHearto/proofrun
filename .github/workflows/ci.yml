@@ -20,7 +20,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - run: node --test "test/*.test.js"
+      # `node --test` with no argument, deliberately. Passing
+      # "test/*.test.js" makes Node resolve the glob itself, which it only
+      # learned to do in 21 -- on Node 18 it fails with "Could not find".
+      # Quoting is required on Windows, where PowerShell does not expand
+      # globs for native commands, so no single form works everywhere.
+      - run: node --test
 
   dogfood:
     name: proofrun must be able to verify itself
